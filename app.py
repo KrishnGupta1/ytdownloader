@@ -16,10 +16,16 @@ def download():
     
     temp_dir = tempfile.mkdtemp()
     
+    # Ye line YouTube ke bot check ko bypass karti hai (Android client use karke)
+    common_opts = {
+        'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
+        'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s')
+    }
+    
     if format_type == 'audio':
         ydl_opts = {
+            **common_opts,
             'format': 'bestaudio/best',
-            'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s'),
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -28,8 +34,8 @@ def download():
         }
     else:
         ydl_opts = {
+            **common_opts,
             'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-            'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s'),
             'merge_output_format': 'mp4',
         }
 
