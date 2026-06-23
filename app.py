@@ -16,9 +16,12 @@ def download():
     
     temp_dir = tempfile.mkdtemp()
     
-    # Ye line YouTube ke bot check ko bypass karti hai (Android client use karke)
+    # YouTube ko trick karne ke liye iOS client aur Browser User-Agent
     common_opts = {
-        'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
+        'extractor_args': {'youtube': {'player_client': ['ios', 'web']}},
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
         'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s')
     }
     
