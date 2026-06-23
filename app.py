@@ -16,15 +16,27 @@ def download():
     
     temp_dir = tempfile.mkdtemp()
     
-    # YouTube ko trick karne ke liye iOS client aur Browser User-Agent
+    # Render Environment se cookies ko read karna
+    cookies_str = os.environ.get('YOUTUBE_COOKIES')
+    cookie_file_path = None
+    
+    if cookies_str:
+        # Cookies ko ek temporary file mein save karna
+        cookie_file_path = os.path.join(temp_dir, 'cookies.txt')
+        with open(cookie_file_path, 'w') as f:
+            f.write(cookies_str)
+
     common_opts = {
-        'extractor_args': {'youtube': {'player_client': ['ios', 'web']}},
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        },
         'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s')
     }
     
+    # Agar cookies mil gayi toh unhe use karna
+    if cookie_file_path:
+        common_opts['cookiefile'] = cookie_file_path
+
+    # Web client use karna cookies ke saath
+    common_opts['extractor_args'] = {'youtube': {'player_client': ['web']}}
+
     if format_type == 'audio':
         ydl_opts = {
             **common_opts,
